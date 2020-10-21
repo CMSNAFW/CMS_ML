@@ -43,6 +43,7 @@ class unpacking(Module):
         self.out.branch("Jet_unboosted_phi","F", lenVar="top.Size()")
         self.out.branch("Jet_unboosted_e","F", lenVar="top.Size()")
         self.out.branch("Jet_unboosted_M","F", lenVar="top.Size()")
+        self.out.branch("Jet_has_promptLep","F", lenVar="top.Size()")
 
         self.out.branch("Muon_unboosted_pt","F", lenVar="top.Size()") 
         self.out.branch("Muon_unboosted_eta","F", lenVar="top.Size()")
@@ -51,8 +52,9 @@ class unpacking(Module):
         self.out.branch("Muon_unboosted_M","F", lenVar="top.Size()")
 
         self.out.branch("Top_pt_rel","F", lenVar="top.Size()")
-        self.out.branch("Is_dR_merg","B", lenVar="top.Size()")
+        self.out.branch("Is_dR_merg","F", lenVar="top.Size()")
         self.out.branch("Costheta","F", lenVar="top.Size()")
+        self.out.branch("Top_dR", "F",lenVar ="top.Size()")
 
         self.out.branch("Top_High_Truth","F", lenVar="top.Size()")
         self.out.branch("Tau_High_Truth","F", lenVar="top.Size()")
@@ -110,9 +112,11 @@ class unpacking(Module):
 
         top_pt_rel = []
         is_dR_merg = []
+        top_dR = []
 
         top_high_truth = []
         tau_high_truth = []
+        jet_has_pL = []
 
         """"""
 
@@ -148,8 +152,8 @@ class unpacking(Module):
                     top_nu_e.append(top_nu_momentum.E())
                     top_nu_M.append(top_nu_momentum.M())  
 
-                    top_bjet_index.append(j)
-                    top_mu_index.append(k)  
+                    top_bjet_index.append(goodJet.index(j))
+                    top_mu_index.append(goodMu.index(k))  
                     top_pt_rel.append(((k.p4().Vect()).Cross(j.p4().Vect())).Mag()/((j.p4().Vect()).Mag())) 
 
                     """unboosting"""
@@ -173,17 +177,19 @@ class unpacking(Module):
                     jet_unboosted_M.append(jet_unboosted_momentum.M())
 
                     if deltaR(j.p4().Eta(),j.p4().Phi(),k.p4().Eta(),k.p4().Phi()) <0.4 :
-                        is_dR_merg.append(False)
-                    else:
-                        is_dR_merg.append(True)
+                        is_dR_merg.append(1)
+                    if( deltaR(j.p4().Eta(),j.p4().Phi(),k.p4().Eta(),k.p4().Phi()) <2 and deltaR(j.p4().Eta(),j.p4().Phi(),k.p4().Eta(),k.p4().Phi()) >0.4):
+                        is_dR_merg.append(0)
+                    else: 
+                        is_dR_merg.append(-1)
+
+                    top_dR.append(deltaR(j.p4().Eta(),j.p4().Phi(),k.p4().Eta(),k.p4().Phi()))
 
                     costheta.append(top_nu_momentum_utils.costhetapol(k.p4(),j.p4(),top_nu_momentum))
 
                     if (k.genPartFlav== 1) : 
-                        for gen in genpart:
-                            if (gen == k.genPartIdx):
-                                if(genpart.pdgId[gen.genPartIdxMother]==24):
-                                    is_muon_prompt = True
+                        if(abs(genpart[genpart[k.genPartIdx].genPartIdxMother].pdgId)==24):
+                            is_muon_prompt = True
 
                     if (k.genPartFlav== 15) : 
                         is_muon_from_tau = True
@@ -191,16 +197,31 @@ class unpacking(Module):
                     if ((j.partonFlavour)==5):
                         is_jet_true = True
 
+                    jet_has_promptLep = False    
+                    for gen in genpart:
+                        if((abs(gen.pdgId) == 11 or abs(gen.pdgId)==13 or abs(gen.pdgId)== 15) and gen.genPartIdxMother>0):
+                            if(abs(genpart[gen.genPartIdxMother].pdgId)==24): 
+                                if deltaR(j.p4().Eta(),j.p4().Phi(),gen.p4().Eta(),gen.p4().Phi()) <0.4 :
+                                    jet_has_promptLep = True 
+
+
+
+
+
+
+
+
                     if ((is_jet_true * is_muon_prompt)== True and (j.partonFlavour*k.charge)<0.) :
                         top_high_truth.append(5)
 
                     if (is_jet_true == False and is_muon_prompt== False):
                         top_high_truth.append(0)
 
-                    if (is_jet_true == True and is_muon_prompt== False):
+                    if (is_jet_true == True and is_muon_prompt== False and jet_has_promptLep == True):
                         top_high_truth.append(1)
 
-
+                    if (is_jet_true == True and is_muon_prompt== False and jet_has_promptLep == False):
+                        top_high_truth.append(2)
                     
                     if (is_jet_true == False and is_muon_prompt== True):
                         top_high_truth.append(3)
@@ -210,6 +231,10 @@ class unpacking(Module):
                         top_high_truth.append(4)
 
                     tau_high_truth.append(is_muon_from_tau)
+                    jet_has_pL.append(jet_has_promptLep)
+
+
+
 
                     
         self.out.fillBranch("Top_pt", top_pt)
@@ -224,8 +249,8 @@ class unpacking(Module):
         self.out.fillBranch("Top_nu_e", top_nu_e)
         self.out.fillBranch("Top_nu_M", top_nu_M)
 
-        #self.out.fillBranch("Top_bjet_index", top_bjet_index)
-        #self.out.fillBranch("Top_mu_index", top_mu_index)
+        self.out.fillBranch("Top_bjet_index", top_bjet_index)
+        self.out.fillBranch("Top_mu_index", top_mu_index)
         self.out.fillBranch("Top_pt_rel", top_pt_rel)
 
         self.out.fillBranch("Jet_unboosted_pt",jet_unboosted_pt) 
@@ -233,6 +258,7 @@ class unpacking(Module):
         self.out.fillBranch("Jet_unboosted_phi",jet_unboosted_phi)
         self.out.fillBranch("Jet_unboosted_e",jet_unboosted_e)
         self.out.fillBranch("Jet_unboosted_M",jet_unboosted_M)
+        self.out.fillBranch("Jet_has_promptLep",jet_has_pL)
 
         self.out.fillBranch("Muon_unboosted_pt",muon_unboosted_pt) 
         self.out.fillBranch("Muon_unboosted_eta",muon_unboosted_eta)
@@ -242,6 +268,7 @@ class unpacking(Module):
 
         self.out.fillBranch("Is_dR_merg",is_dR_merg)
         self.out.fillBranch("Costheta", costheta)
+        self.out.fillBranch("Top_dR", top_dR)
 
         self.out.fillBranch("Top_High_Truth",top_high_truth)
         self.out.fillBranch("Tau_High_Truth",tau_high_truth)
