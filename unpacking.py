@@ -211,7 +211,7 @@ class unpacking(Module):
 
 
 
-                    if ((is_jet_true * is_muon_prompt)== True and (j.partonFlavour*k.charge)<0.) :
+                    if ((is_jet_true * is_muon_prompt)== True and (j.hadronFlavour*k.charge)>0.) :
                         top_high_truth.append(5)
 
                     if (is_jet_true == False and is_muon_prompt== False):
@@ -227,7 +227,7 @@ class unpacking(Module):
                         top_high_truth.append(3)
 
 
-                    if ((is_jet_true * is_muon_prompt)== True and (j.partonFlavour*k.charge)>0.) :
+                    if ((is_jet_true * is_muon_prompt)== True and (j.hadronFlavour*k.charge)<0.) :
                         top_high_truth.append(4)
 
                     tau_high_truth.append(is_muon_from_tau)
