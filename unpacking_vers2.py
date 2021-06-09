@@ -20,53 +20,55 @@ class unpacking_vers2(Module):
         pass
     def beginFile(self, inputFile, outputFile, inputTree, wrappedOutputTree):
         self.out = wrappedOutputTree
+
         """Branch variabili top senza nu"""
-        self.out.branch("Top_pt","F", lenVar="top.Size()") 
-        self.out.branch("Top_eta","F", lenVar="top.Size()")
-        self.out.branch("Top_phi","F", lenVar="top.Size()")
-        self.out.branch("Top_e","F", lenVar="top.Size()")
-        self.out.branch("Top_M","F", lenVar="top.Size()")
+        self.out.branch("Top_pt","F", lenVar="nTop") 
+        self.out.branch("Top_eta","F", lenVar="nTop")
+        self.out.branch("Top_phi","F", lenVar="nTop")
+        self.out.branch("Top_e","F", lenVar="nTop")
+        self.out.branch("Top_M","F", lenVar="nTop")
 
         """Branch variabili top con nu"""
 
-        self.out.branch("Top_nu_pt","F", lenVar="top.Size()") 
-        self.out.branch("Top_nu_eta","F", lenVar="top.Size()")
-        self.out.branch("Top_nu_phi","F", lenVar="top.Size()")
-        self.out.branch("Top_nu_e","F", lenVar="top.Size()")
-        self.out.branch("Top_nu_M","F", lenVar="top.Size()")
+        self.out.branch("Top_nu_pt","F", lenVar="nTop") 
+        self.out.branch("Top_nu_eta","F", lenVar="nTop")
+        self.out.branch("Top_nu_phi","F", lenVar="nTop")
+        self.out.branch("Top_nu_e","F", lenVar="nTop")
+        self.out.branch("Top_nu_M","F", lenVar="nTop")
 
         """Branch indici goodJet e goodMu"""
-        self.out.branch("Top_bjet_index","F", lenVar="top.Size()")
-        self.out.branch("Top_mu_index","F", lenVar="top.Size()")
-        self.out.branch("Top_el_index","F", lenVar = "top.Size()")
+        self.out.branch("Top_bjet_index","I", lenVar="nTop")
+        self.out.branch("Top_mu_index","I", lenVar="nTop")
+        self.out.branch("Top_el_index","I", lenVar="nTop")
 
         """Muon and bjet unboosted (top frame)"""
 
-        self.out.branch("Top_Jet_unboosted_pt","F", lenVar="top.Size()") 
-        self.out.branch("Top_Jet_unboosted_eta","F", lenVar="top.Size()")
-        self.out.branch("Top_Jet_unboosted_phi","F", lenVar="top.Size()")
-        self.out.branch("Top_Jet_unboosted_e","F", lenVar="top.Size()")
-        self.out.branch("Top_Jet_unboosted_M","F", lenVar="top.Size()")
-        self.out.branch("Top_Jet_has_promptLep","F", lenVar="top.Size()")
+        self.out.branch("Top_Jet_unboosted_pt","F", lenVar="nTop") 
+        self.out.branch("Top_Jet_unboosted_eta","F", lenVar="nTop")
+        self.out.branch("Top_Jet_unboosted_phi","F", lenVar="nTop")
+        self.out.branch("Top_Jet_unboosted_e","F", lenVar="nTop")
+        self.out.branch("Top_Jet_unboosted_M","F", lenVar="nTop")
+        self.out.branch("Top_Jet_has_promptLep","O", lenVar="nTop")
 
-        self.out.branch("Top_Lep_unboosted_pt","F", lenVar="top.Size()") 
-        self.out.branch("Top_Lep_unboosted_eta","F", lenVar="top.Size()")
-        self.out.branch("Top_Lep_unboosted_phi","F", lenVar="top.Size()")
-        self.out.branch("Top_Lep_unboosted_e","F", lenVar="top.Size()")
-        self.out.branch("Top_Lep_unboosted_M","F", lenVar="top.Size()")
+        self.out.branch("Top_Lep_unboosted_pt","F", lenVar="nTop") 
+        self.out.branch("Top_Lep_unboosted_eta","F", lenVar="nTop")
+        self.out.branch("Top_Lep_unboosted_phi","F", lenVar="nTop")
+        self.out.branch("Top_Lep_unboosted_e","F", lenVar="nTop")
+        self.out.branch("Top_Lep_unboosted_M","F", lenVar="nTop")
 
-        self.out.branch("Top_pt_rel","F", lenVar="top.Size()")
-        self.out.branch("Top_Is_dR_merg","F", lenVar="top.Size()")
-        self.out.branch("Top_Costheta","F", lenVar="top.Size()")
-        self.out.branch("Top_dR", "F",lenVar ="top.Size()")
+        self.out.branch("Top_pt_rel","F", lenVar="nTop")
+        self.out.branch("Top_Is_dR_merg","I", lenVar="nTop")
+        self.out.branch("Top_Costheta","F", lenVar="nTop")
+        self.out.branch("Top_dR","F",lenVar="nTop")
 
-        self.out.branch("Top_High_Truth","F", lenVar="top.Size()")
-        self.out.branch("Top_Tau_High_Truth","F", lenVar="top.Size()")
-        self.out.branch("Top_Lep_MomId","F", lenVar="top.Size()")
+        self.out.branch("Top_High_Truth","I", lenVar="nTop") 
+        self.out.branch("Top_Tau_High_Truth","I", lenVar="nTop") # (It should be bool)
+        self.out.branch("Top_Lep_MomId","I", lenVar="nTop")
         self.out.branch("Muon_mindR","F", lenVar="nMuon")
-        self.out.branch("Muon_mindR_jIndex","F", lenVar="nMuon")
+        self.out.branch("Muon_mindR_jIndex","I", lenVar="nMuon")
         self.out.branch("Electron_mindR","F", lenVar="nElectron")
-        self.out.branch("Electron_mindR_jIndex","F", lenVar="nElectron")
+        self.out.branch("Electron_mindR_jIndex","I", lenVar="nElectron") 
+
 
     def endFile(self, inputFile, outputFile, inputTree, wrappedOutputTree):
         pass
@@ -83,8 +85,6 @@ class unpacking_vers2(Module):
             LHE = Collection(event, "LHEPart")
     
         
-        goodMu = []
-        goodJet = []
         """Variabili top senza nu"""
         top_momentum=ROOT.TLorentzVector()
         top_pt =[]
@@ -140,19 +140,18 @@ class unpacking_vers2(Module):
         electron_mindR = []
         electron_mindR_jIndex = []
 
-        """"""
 
         bjets, nobjets = bjet_filter(jets, 'DeepCSV', 'L')
         
         goodMu = list(filter(lambda x : x.pt>10, muons))
-        goodJet = list(filter(lambda x :  x.pt>10, jets)) #noDeePCSV
+        goodJet = list(filter(lambda x :  x.pt>30, jets)) #noDeePCSV
         goodEl = list(filter(lambda x : x.pt>10, electrons))
 
         allMu = list(filter(lambda x : x.pt>0, muons))
         allJet = list(filter(lambda x :  x.pt>0 , jets))
         allEl = list(filter(lambda x : x.pt>0, electrons))
 
-        if not ((len(goodMu)>0 or len(goodEl)) and len(goodJet)>0 ):
+        if not ((len(goodMu)>0 or len(goodEl)>0) and len(goodJet)>0 ):
             
             return False
         
@@ -191,33 +190,31 @@ class unpacking_vers2(Module):
 
             for j in allJet:  
 
-               
-
-
                 if j in goodJet:
 
                     is_jet_true = False
                     jet_has_promptLep = False 
                     if self.isMC==1:
                         for gen in genpart:
-                                if (deltaR(j.p4().Eta(),j.p4().Phi(),gen.p4().Eta(),gen.p4().Phi()) <0.1 and abs(gen.pdgId)==5 and gen.genPartIdxMother_prompt>-1):
+                                if (deltaR(j.p4().Eta(),j.p4().Phi(),gen.p4().Eta(),gen.p4().Phi()) <0.4 and abs(gen.pdgId)==5 and gen.genPartIdxMother_prompt>-1): #This is 0.1 (but in ML is 0.4) -> We use 0.4, see what happens
                                     if(abs(genpart[gen.genPartIdxMother_prompt].pdgId)==6 ):
                                         is_jet_true = True
 
                            
                         for gen in genpart:
                             if((abs(gen.pdgId) == 11 or abs(gen.pdgId)==13 or abs(gen.pdgId)== 15) and gen.genPartIdxMother_prompt>-1):
-                                if(abs(genpart[gen.genPartIdxMother_prompt].pdgId)==24 and genpart[gen.genPartIdxMother_prompt].genPartIdxMother_prompt>-1): 
+                                if(abs(genpart[gen.genPartIdxMother_prompt].pdgId)==24 and genpart[gen.genPartIdxMother_prompt].genPartIdxMother_prompt>-1):
                                     if (abs(genpart[genpart[gen.genPartIdxMother_prompt].genPartIdxMother_prompt].pdgId)==6 ):
-                                        if deltaR(j.p4().Eta(),j.p4().Phi(),gen.p4().Eta(),gen.p4().Phi()) <0.1 :
+                                        if deltaR(j.p4().Eta(),j.p4().Phi(),gen.p4().Eta(),gen.p4().Phi()) <0.3 :  #This is 0.3 (but in ML is 0.4) -> We use 0.3
                                             jet_has_promptLep = True 
                     jet_has_pL.append(jet_has_promptLep)
                     
                     for m in allMu:
 
                         if m in goodMu:
-                            is_muon_prompt = False
-                    
+
+                            jet_has_pL.append(jet_has_promptLep)
+                            is_muon_prompt = False                  
                             is_muon_from_tau = 0
                            
                             top_bjet_index.append(allJet.index(j))
@@ -248,8 +245,6 @@ class unpacking_vers2(Module):
                             top_eta.append(top_momentum.Eta())
                             top_e.append(top_momentum.E())
                             top_M.append(top_momentum.M())
-
-                            
 
          
                             if top_nu_momentum is None:
@@ -284,16 +279,20 @@ class unpacking_vers2(Module):
                             jet_unboosted_e.append(jet_unboosted_momentum.E())
                             jet_unboosted_M.append(jet_unboosted_momentum.M())
 
-
-
-                            top_dR.append(deltaR(j.p4().Eta(),j.p4().Phi(),m.p4().Eta(),m.p4().Phi()))
+                            if deltaR(j.p4().Eta(),j.p4().Phi(),m.p4().Eta(),m.p4().Phi()) <=0.4:
+                                top_dR.append(deltaR((j.p4()-m.p4()).Eta(),(j.p4()-m.p4()).Phi(),m.p4().Eta(),m.p4().Phi()))
+                            else:
+                                top_dR.append(deltaR(j.p4().Eta(),j.p4().Phi(),m.p4().Eta(),m.p4().Phi()))                                
 
                             costheta.append(top_nu_momentum_utils.costhetapol(m.p4(),j.p4(),top_nu_momentum))
+
                             if self.isMC==1:
 
                                 if  m.genPartIdx > 0:
                                     if genpart[m.genPartIdx].genPartIdxMother_prompt > -1:
                                         lep_MomId.append(genpart[genpart[m.genPartIdx].genPartIdxMother_prompt].pdgId)
+                                    else:
+                                        lep_MomId.append(0)
                                 else:
                                     lep_MomId.append(0)
 
@@ -308,11 +307,7 @@ class unpacking_vers2(Module):
                                         if(deltaR(m.p4().Eta(),m.p4().Phi(),gen.p4().Eta(),gen.p4().Phi()) <0.1 and abs(genpart[gen.genPartIdxMother_prompt].pdgId)==24 and  genpart[gen.genPartIdxMother_prompt].genPartIdxMother_prompt>-1):
                                             if(abs(genpart[genpart[gen.genPartIdxMother_prompt].genPartIdxMother_prompt].pdgId)==6 ):
                                                 is_muon_from_tau = 1
-                                            
-
-                     
-                                            
-
+                                                
                                 tau_high_truth.append(is_muon_from_tau)
 
                                 if ((is_jet_true * is_muon_prompt)== True and (j.partonFlavour*m.charge)>0.) :
@@ -330,7 +325,6 @@ class unpacking_vers2(Module):
                                 if (is_jet_true == False and is_muon_prompt== True):
                                     top_high_truth.append(4)
 
-
                                 if ((is_jet_true * is_muon_prompt)== True and (j.partonFlavour*m.charge)<0.) :
                                     top_high_truth.append(5)
 
@@ -338,8 +332,9 @@ class unpacking_vers2(Module):
                     for e in allEl:
 
                         if e in goodEl:
-                            is_el_prompt = False
-                    
+
+                            jet_has_pL.append(jet_has_promptLep)
+                            is_el_prompt = False                    
                             is_el_from_tau = 0
                            
                             top_bjet_index.append(allJet.index(j))
@@ -350,15 +345,12 @@ class unpacking_vers2(Module):
                             if deltaR(j.p4().Eta(),j.p4().Phi(),e.p4().Eta(),e.p4().Phi()) <=0.4 :
                                 is_dR_merg.append(1)
 
-
                             elif( deltaR(j.p4().Eta(),j.p4().Phi(),e.p4().Eta(),e.p4().Phi()) <=2 and deltaR(j.p4().Eta(),j.p4().Phi(),e.p4().Eta(),e.p4().Phi()) >0.4):
                                 is_dR_merg.append(0)
 
                             else: 
                                 is_dR_merg.append(-1)
                                 
-
-
           
                             if deltaR(j.p4().Eta(),j.p4().Phi(),e.p4().Eta(),e.p4().Phi()) <=0.4 :
                                 top_momentum = j.p4() 
@@ -375,8 +367,6 @@ class unpacking_vers2(Module):
                             if top_nu_momentum is None:
                                return False
          
-                            
-
                             top_nu_pt.append(top_nu_momentum.Pt())
                             top_nu_phi.append(top_nu_momentum.Phi())
                             top_nu_eta.append(top_nu_momentum.Eta())
@@ -407,8 +397,10 @@ class unpacking_vers2(Module):
                             jet_unboosted_M.append(jet_unboosted_momentum.M())
 
 
-
-                            top_dR.append(deltaR(j.p4().Eta(),j.p4().Phi(),e.p4().Eta(),e.p4().Phi()))
+                            if deltaR(j.p4().Eta(),j.p4().Phi(),e.p4().Eta(),e.p4().Phi()) <=0.4:
+                                top_dR.append(deltaR((j.p4()-e.p4()).Eta(),(j.p4()-e.p4()).Phi(),e.p4().Eta(),e.p4().Phi()))
+                            else:
+                                top_dR.append(deltaR(j.p4().Eta(),j.p4().Phi(),e.p4().Eta(),e.p4().Phi())) 
 
                             costheta.append(top_nu_momentum_utils.costhetapol(e.p4(),j.p4(),top_nu_momentum))
 
@@ -417,6 +409,8 @@ class unpacking_vers2(Module):
                                 if  e.genPartIdx > 0:
                                     if genpart[e.genPartIdx].genPartIdxMother_prompt > -1:
                                         lep_MomId.append(genpart[genpart[e.genPartIdx].genPartIdxMother_prompt].pdgId)
+                                    else:
+                                        lep_MomId.append(0)
                                 else:
                                     lep_MomId.append(0)
 
@@ -449,59 +443,54 @@ class unpacking_vers2(Module):
                                 if (is_jet_true == False and is_el_prompt== True):
                                     top_high_truth.append(4)
 
-
                                 if ((is_jet_true * is_el_prompt)== True and (j.partonFlavour*e.charge)<0.) :
                                     top_high_truth.append(5)
 
-                    
-                    
-
-
-
-
-
-                    
+        #IMPORTANT: Here it should be better to reject the events with ONLY tops with DeltaR>2 
+    
+        
         self.out.fillBranch("Top_pt", top_pt)
         self.out.fillBranch("Top_phi", top_phi)
         self.out.fillBranch("Top_eta", top_eta)
         self.out.fillBranch("Top_e", top_e)
         self.out.fillBranch("Top_M", top_M)
-
+        
         self.out.fillBranch("Top_nu_pt", top_nu_pt)
         self.out.fillBranch("Top_nu_phi", top_nu_phi)
         self.out.fillBranch("Top_nu_eta", top_nu_eta)
         self.out.fillBranch("Top_nu_e", top_nu_e)
         self.out.fillBranch("Top_nu_M", top_nu_M)
-
+        
         self.out.fillBranch("Top_bjet_index", top_bjet_index)
         self.out.fillBranch("Top_mu_index", top_mu_index)
         self.out.fillBranch("Top_el_index", top_el_index)
-        self.out.fillBranch("Top_pt_rel", top_pt_rel)
-
+        
         self.out.fillBranch("Top_Jet_unboosted_pt",jet_unboosted_pt) 
         self.out.fillBranch("Top_Jet_unboosted_eta",jet_unboosted_eta)
         self.out.fillBranch("Top_Jet_unboosted_phi",jet_unboosted_phi)
         self.out.fillBranch("Top_Jet_unboosted_e",jet_unboosted_e)
         self.out.fillBranch("Top_Jet_unboosted_M",jet_unboosted_M)
         self.out.fillBranch("Top_Jet_has_promptLep",jet_has_pL)
-
+        
         self.out.fillBranch("Top_Lep_unboosted_pt",lep_unboosted_pt) 
         self.out.fillBranch("Top_Lep_unboosted_eta",lep_unboosted_eta)
         self.out.fillBranch("Top_Lep_unboosted_phi",lep_unboosted_phi)
         self.out.fillBranch("Top_Lep_unboosted_e",lep_unboosted_e)
         self.out.fillBranch("Top_Lep_unboosted_M",lep_unboosted_M)
-
+        
+        self.out.fillBranch("Top_pt_rel", top_pt_rel)
         self.out.fillBranch("Top_Is_dR_merg",is_dR_merg)
         self.out.fillBranch("Top_Costheta", costheta)
         self.out.fillBranch("Top_dR", top_dR)
-
+        
         self.out.fillBranch("Top_High_Truth",top_high_truth)
         self.out.fillBranch("Top_Tau_High_Truth",tau_high_truth)
         self.out.fillBranch("Top_Lep_MomId",lep_MomId)
-        self.out.fillBranch("Muon_mindR", muon_mindR )
-        self.out.fillBranch("Muon_mindR_jIndex", muon_mindR_jIndex )
-        self.out.fillBranch("Electron_mindR", electron_mindR )
-        self.out.fillBranch("Electron_mindR_jIndex", electron_mindR_jIndex )
+        self.out.fillBranch("Muon_mindR", muon_mindR)
+        self.out.fillBranch("Muon_mindR_jIndex", muon_mindR_jIndex)
+        self.out.fillBranch("Electron_mindR", electron_mindR)
+        self.out.fillBranch("Electron_mindR_jIndex", electron_mindR_jIndex)
+        
 
         return True
 
